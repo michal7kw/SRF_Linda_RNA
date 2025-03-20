@@ -9,6 +9,8 @@
 *.tar.lzma
 *.tar.lz
 
+tmp/
+
 logs/
 250307_A00626_0942_BHV7KVDMXY_1/HV7KVDMXY/
 cellranger_reference/
@@ -25,3 +27,15 @@ slurm_logs/
 R26_*/
 refdata-gex-GRCm39-2024-A/
 Archive/
+*.bam
+*.bai
+*.fastq
+*.json
+*.h5
+*.loom
+*.h5ad
+*.h5ad.gz
+*.h5ad.gz.gz
+*.h5ad.gz.gz.gz
+*.h5ad.gz.gz.gz.gz
+*tgz

@@ -11,8 +11,8 @@
 #SBATCH --account=kubacki.michal
 #SBATCH --partition=workq
 
-export CELLRANGER_COPY_MODE=copy
-export CELLRANGER_USE_HARDLINKS=false
+# export CELLRANGER_COPY_MODE=copy
+# export CELLRANGER_USE_HARDLINKS=false
 
 # Set up cleanup trap
 cleanup() {
@@ -21,6 +21,10 @@ cleanup() {
     echo "Cleanup complete."
     exit
 }
+
+# Uncomment these to prevent hard link errors
+export CELLRANGER_COPY_MODE=copy
+export CELLRANGER_USE_HARDLINKS=false
 
 # Trap signals
 trap cleanup SIGINT SIGTERM EXIT
@@ -32,13 +36,13 @@ mkdir -p logs
 CELLRANGER="/beegfs/scratch/ric.broccoli/kubacki.michal/tools/cellranger/cellranger-9.0.0/cellranger"
 
 # Path to data directory
-DATA_DIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_Linda_RNA/250307_A00626_0942_BHV7KVDMXY_1/Project_SessaA_2368_Rent_Novaseq6000_w_reagents_scRNA"
+DATA_DIR="/beegfs/scratch/ric.broccoli/kubacki.michal/Azenta_projects/250307_A00626_0942_BHV7KVDMXY_1/Project_SessaA_2368_Rent_Novaseq6000_w_reagents_scRNA"
 
 # Path to reference genome
 REF="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_Linda_RNA/refdata-gex-GRCm39-2024-A"
 
-# Output directory
-OUTPUT_DIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_Linda_RNA/cellranger_output_retry"
+# Output directory - Add a unique suffix
+OUTPUT_DIR="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_Linda_RNA/cellranger_output_full"
 mkdir -p $OUTPUT_DIR
 
 # Sample names
@@ -85,9 +89,10 @@ for LANE in "L001" "L002"; do
 done
 
 # Get number of physical cores on the node for optimal performance
-CORES=$(nproc)
+CORES=$SLURM_CPUS_PER_TASK
 # Calculate memory in GB, leaving some overhead for the system
-MEM_GB=$(($(grep MemTotal /proc/meminfo | awk '{print $2}') / 1024 / 1024 - 8))
+# Use the SLURM allocated memory instead of total system memory
+MEM_GB=$((${SLURM_MEM_PER_NODE} / 1024 - 8))
 
 echo "Using $CORES cores and ${MEM_GB}GB memory for Cell Ranger"
 
@@ -112,7 +117,24 @@ ensure_directory() {
 ensure_directory $OUTPUT_DIR
 ensure_directory $FASTQ_DIR
 
-# Run Cell Ranger count with optimized resource allocation
+# Create a local temporary directory - Change the path
+LOCAL_TMP="/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_Linda_RNA/tmp/cellranger_full_${SAMPLE}_${SLURM_ARRAY_TASK_ID}"
+mkdir -p $LOCAL_TMP
+
+# Clean up any existing pipestance directory that might conflict
+# The pipestance directory is created in the current directory by Cell Ranger
+if [ -d "${UNIQUE_ID}" ]; then
+    echo "Removing existing pipestance directory: ${UNIQUE_ID}"
+    rm -rf "${UNIQUE_ID}"
+fi
+
+# Also check in the temp directory
+if [ -d "${LOCAL_TMP}/${UNIQUE_ID}" ]; then
+    echo "Removing existing pipestance directory in temp location: ${LOCAL_TMP}/${UNIQUE_ID}"
+    rm -rf "${LOCAL_TMP}/${UNIQUE_ID}"
+fi
+
+# Run Cell Ranger in the local directory
 $CELLRANGER count \
     --id=${UNIQUE_ID} \
     --transcriptome=$REF \
@@ -123,6 +145,10 @@ $CELLRANGER count \
     --create-bam=true \
     --localcores=$CORES \
     --localmem=$MEM_GB \
-    --disable-ui
+    --disable-ui \
+    --output-dir=$LOCAL_TMP
+
+# Copy results back to BeeGFS
+rsync -av $LOCAL_TMP/ $OUTPUT_DIR/
 
 echo "Cell Ranger processing complete for sample: $SAMPLE" 
