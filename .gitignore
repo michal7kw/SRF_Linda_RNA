@@ -39,3 +39,4 @@ Archive/
 *.h5ad.gz.gz.gz
 *.h5ad.gz.gz.gz.gz
 *tgz
+post_analysis/results/
