@@ -1,0 +1,6 @@
+total_cells: 6242
+total_genes: 26302
+clusters: 9
+cell_types: 7
+cells_per_cluster: {'0': 1905, '1': 1341, '2': 832, '3': 590, '4': 570, '5': 284, '6': 276, '7': 270, '8': 174}
+cells_per_cell_type: {'Neurons': 2549, 'Microglia': 1000, 'Oligodendrocytes': 930, 'Endothelial': 565, 'Astrocytes': 479, 'OPCs': 474, 'Pericytes': 245}

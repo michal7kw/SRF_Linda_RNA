@@ -1,0 +1,34 @@
+==================================================
+CLUSTERING ANALYSIS SUMMARY
+==================================================
+
+Date: 2025-03-27 16:09:11
+Analysis duration: 998.9 seconds
+
+Resolutions tested: 10
+Resolution range: 0.05 to 0.8
+
+OPTIMAL CLUSTERING RESULT:
+- Optimal resolution: 0.05
+- Number of clusters: 9
+- Silhouette score: 0.1468
+- Davies-Bouldin score: 1.4198 (lower is better)
+- Calinski-Harabasz score: 1063.5
+- Avg. marker genes per cluster: 10.0
+- Marker gene score: 1.0000
+- Overall quality score: 0.7836
+
+Results saved to:
+- /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_Linda_RNA/post_analysis/individual_data_analysis_opt_clusters/cellranger_counts_R26_Nestin_Ctrl_adult_2/my_cluster_analysis
+
+All clustering resolutions saved in the AnnData object:
+- leiden_0.05: 9 clusters
+- leiden_0.13: 10 clusters
+- leiden_0.22: 14 clusters
+- leiden_0.3: 19 clusters
+- leiden_0.38: 20 clusters
+- leiden_0.47: 22 clusters
+- leiden_0.55: 22 clusters
+- leiden_0.63: 23 clusters
+- leiden_0.72: 24 clusters
+- leiden_0.8: 28 clusters

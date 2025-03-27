@@ -1,0 +1,34 @@
+==================================================
+CLUSTERING ANALYSIS SUMMARY
+==================================================
+
+Date: 2025-03-27 16:02:06
+Analysis duration: 612.5 seconds
+
+Resolutions tested: 10
+Resolution range: 0.05 to 0.8
+
+OPTIMAL CLUSTERING RESULT:
+- Optimal resolution: 0.47
+- Number of clusters: 22
+- Silhouette score: 0.1402
+- Davies-Bouldin score: 1.4811 (lower is better)
+- Calinski-Harabasz score: 332.4
+- Avg. marker genes per cluster: 10.0
+- Marker gene score: 1.0000
+- Overall quality score: 0.8688
+
+Results saved to:
+- /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_Linda_RNA/post_analysis/individual_data_analysis_opt_clusters/cellranger_counts_R26_Emx1_Mut_adult_1/my_cluster_analysis
+
+All clustering resolutions saved in the AnnData object:
+- leiden_0.05: 6 clusters
+- leiden_0.13: 12 clusters
+- leiden_0.22: 14 clusters
+- leiden_0.3: 19 clusters
+- leiden_0.38: 21 clusters
+- leiden_0.47: 22 clusters
+- leiden_0.55: 23 clusters
+- leiden_0.63: 23 clusters
+- leiden_0.72: 25 clusters
+- leiden_0.8: 26 clusters

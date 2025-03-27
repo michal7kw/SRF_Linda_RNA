@@ -1,0 +1,27 @@
+cell_type,cell_count,percentage
+Unassigned,4209,44.25
+DG,1388,14.59
+Oligo,1380,14.51
+Micro-PVM,445,4.68
+Astro,382,4.02
+CA1-ProS,344,3.62
+DG|Oligo,208,2.19
+L6b/CT ENT,180,1.89
+CA3,175,1.84
+CA1-ProS|Oligo,88,0.93
+Sst,73,0.77
+SUB-ProS,70,0.74
+L2/3 IT PPP,66,0.69
+Sncg,64,0.67
+Pvalb,62,0.65
+Endo,49,0.52
+VLMC,46,0.48
+Lamp5,46,0.48
+L4/5 IT CTX,44,0.46
+NP SUB,41,0.43
+L3 IT ENT,39,0.41
+Lamp5|Oligo,31,0.33
+CA3|Oligo,29,0.3
+DG|VLMC,22,0.23
+Astro|Oligo,21,0.22
+Astro|Micro-PVM,10,0.11
