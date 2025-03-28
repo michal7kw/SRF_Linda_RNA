@@ -202,9 +202,10 @@ if 'majority_voting' in adata_norm.obs.columns:
                 title=f"Cell Type Annotation ({sel_model}, {sel_sample})")
     plt.tight_layout()
     output_file = os.path.join(results_dir, f"{sel_sample}_celltypes.png")
-    plt.savefig(output_file, dpi=150)
+    fig.savefig(output_file, dpi=150)
     print(f"Saved cell type plot to {output_file}")
-    plt.show()
+    display(fig)
+    plt.close(fig)
 
 # %%
 # Confidence score plot
@@ -214,9 +215,10 @@ if 'conf_score' in adata_norm.obs.columns:
                 title=f"Annotation Confidence Score ({sel_model}, {sel_sample})", cmap='viridis')
     plt.tight_layout()
     output_file = os.path.join(results_dir, f"{sel_sample}_confidence.png")
-    plt.savefig(output_file, dpi=150)
+    fig.savefig(output_file, dpi=150)
     print(f"Saved confidence score plot to {output_file}")
-    plt.show()
+    display(fig)
+    plt.close(fig)
 
 # %%
 # Save the annotated adata

@@ -155,25 +155,42 @@ def identify_and_visualize_markers(adata, resolutions, output_dir=None,
             if f"dendrogram_{leiden_resolution}" not in adata.uns:
                 sc.tl.dendrogram(adata, groupby=leiden_resolution)
             
-            # Generate heatmap
-            plt.figure(figsize=(15, 10))
-            # Generate a heatmap of marker gene expression using scanpy's heatmap plotting function
-            sc.pl.heatmap(adata, available_markers, groupby=leiden_resolution, 
-                         dendrogram=True, swap_axes=True, use_raw=False, 
-                         show=False, standard_scale='var', cmap='viridis')
+            # Generate improved heatmap
+            plt.figure(figsize=(16, 12))  # Larger figure size for better readability
             
-            plt.suptitle(f"Marker gene expression heatmap (resolution = {resolution})", fontsize=16)
+            # Create an enhanced heatmap with better formatting
+            sc.pl.heatmap(adata, available_markers, groupby=leiden_resolution, 
+                         dendrogram=True, 
+                         swap_axes=True,               # Put genes on y-axis for better labels
+                         show_gene_labels=True,        # Show gene names
+                         use_raw=False,                # Use normalized data
+                         standard_scale='var',         # Scale expression by gene
+                         cmap='viridis',               # Use a perceptually uniform colormap
+                         vmin=0,                       # Set minimum value to 0
+                         vmax=None,                    # Let max value scale automatically
+                         show=False,
+                         colorbar_title='Scaled expression')
+            
+            plt.title(f"Marker gene expression heatmap (resolution = {resolution})", fontsize=16, pad=20)
+            
+            # Improve tick labels
+            ax = plt.gca()
+            for label in ax.get_yticklabels():
+                label.set_fontsize(10)
+                label.set_fontweight('bold')
+            
             plt.tight_layout()
             
             if save_figures:
-                plt.savefig(os.path.join(output_dir, f"markers_heatmap_res{resolution}.png"), dpi=150)
+                plt.savefig(os.path.join(output_dir, f"markers_heatmap_res{resolution}.png"), 
+                           dpi=150, bbox_inches='tight')
             
             if show_figures:
                 plt.show()
             else:
                 plt.close()
                 
-            print(f"  ✓ Generated heatmap with {len(available_markers)} genes")
+            print(f"  ✓ Generated enhanced heatmap with {len(available_markers)} genes")
             
         except Exception as e:
             print(f"  ✗ Error generating heatmap: {e}")
@@ -649,18 +666,41 @@ def evaluate_clustering_quality(adata, resolutions, marker_results=None, leiden_
                 available_markers = [gene for gene in unique_markers if gene in adata.var_names]
                 
                 if available_markers:
-                    plt.figure(figsize=(15, 10))
+                    plt.figure(figsize=(16, 12))  # Larger figure for readability
+                    
+                    # Create an enhanced heatmap with better formatting
                     sc.pl.heatmap(adata, available_markers, groupby=optimal_leiden, 
-                                 dendrogram=True, swap_axes=True, use_raw=False, 
-                                 show=False, standard_scale='var', cmap='viridis')
+                                 dendrogram=True,
+                                 swap_axes=True,              # Put genes on y-axis for better labels  
+                                 show_gene_labels=True,       # Show gene names
+                                 use_raw=False,               # Use processed data
+                                 standard_scale='var',        # Scale expression by gene
+                                 cmap='viridis',              # Better colormap
+                                 vmin=0,                      # Set minimum value to 0
+                                 vmax=None,                   # Let max scale automatically
+                                 show=False,
+                                 colorbar_title='Scaled expression')
+                    
+                    # Improve the title
                     plt.suptitle(f'Top Markers for Optimal Clustering (Resolution={optimal_resolution})', 
-                                fontsize=16)
-                    plt.tight_layout()
-                    plt.savefig(os.path.join(output_dir, "optimal_clustering_heatmap.png"), dpi=150)
+                                fontsize=18, y=0.98)
+                    plt.title('Hierarchical Clustering of Cell Groups', fontsize=14, pad=10)
+                    
+                    # Improve tick labels
+                    ax = plt.gca()
+                    for label in ax.get_yticklabels():
+                        label.set_fontsize(10)
+                        label.set_fontweight('bold')
+                    
+                    plt.tight_layout(rect=[0, 0, 1, 0.96])  # Make room for suptitle
+                    plt.savefig(os.path.join(output_dir, "optimal_clustering_heatmap.png"), 
+                               dpi=150, bbox_inches='tight')
                     if show_figures:
                         plt.show()
                     else:
                         plt.close()
+                    
+                    print(f"Enhanced heatmap of {len(available_markers)} top marker genes saved.")
         except Exception as e:
             print(f"Error generating optimal clustering heatmap: {e}")
         

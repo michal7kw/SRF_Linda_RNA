@@ -140,22 +140,37 @@ plt.tight_layout()
 plt.show()
 
 # %%
-# Save the current normalized and log-transformed data to a new layer for CellTypist
+# Save the current normalized and log-transformed data to a new layer BEFORE scaling
 adata.layers['for_cell_typist'] = adata.X.copy()
 
 # %%
-# Quick check that normalization worked correctly
-counts_after_norm = np.expm1(adata.X).sum(axis=1)
+# Quick check that the data in the layer is correctly normalized
+# Reverse log1p transformation
+if issparse(adata.layers['for_cell_typist']):
+    counts_in_layer = adata.layers['for_cell_typist'].copy()
+    counts_in_layer.data = np.expm1(counts_in_layer.data)
+else:
+    counts_in_layer = np.expm1(adata.layers['for_cell_typist'])
 
-# Basic QC check
-if np.mean(counts_after_norm) < 9000 or np.mean(counts_after_norm) > 11000:
-    warnings.warn("Normalization may not have worked as expected. Check your data.")
+# Sum counts per cell
+total_counts_layer = np.asarray(counts_in_layer.sum(axis=1)).flatten()
+
+print("\nVerifying normalization in 'for_cell_typist' layer:")
+print(f"  Mean total counts (reversed log1p): {total_counts_layer.mean():.2f}")
+print(f"  Median total counts (reversed log1p): {np.median(total_counts_layer):.2f}")
+
+# Basic QC check for the layer
+if np.mean(total_counts_layer) < 9900 or np.mean(total_counts_layer) > 10100:
+    warnings.warn(f"Normalization in 'for_cell_typist' layer may not be exactly 10k (Mean: {total_counts_layer.mean():.2f}). Check normalization step.")
+else:
+    print("  Normalization in 'for_cell_typist' layer appears correct (around 10k).")
 
 # %% [markdown]
 # # 5. Dimensionality Reduction
 
 # %%
-# Scale adata to unit variance and zero mean
+# Scale adata.X to unit variance and zero mean AFTER saving the normalized layer
+# This step modifies adata.X but leaves adata.layers['for_cell_typist'] untouched
 sc.pp.scale(adata, max_value=10)
 
 # Run PCA
@@ -333,9 +348,43 @@ if os.path.exists(contribution_summary_path):
 # Display marker heatmap for optimal clustering
 optimal_heatmap_path = os.path.join(OUTPUT_DIR, 'my_cluster_analysis', 'evaluation', 'optimal_clustering_heatmap.png')
 if os.path.exists(optimal_heatmap_path):
-    optimal_heatmap_img = Image(optimal_heatmap_path)
-    print(f"Marker gene heatmap for optimal clustering (resolution={optimal_resolution}):")
-    display(optimal_heatmap_img)
+    # Instead of just displaying the image, let's create an improved version
+    # First, get the marker genes and expression data
+    leiden_key = f'leiden_{optimal_resolution}'
+    
+    # Check if we have marker genes information
+    if f"rank_genes_{optimal_resolution}" in adata.uns:
+        # Get top markers for each cluster (adjust n_genes as needed)
+        n_top_genes = 20
+        sc.tl.dendrogram(adata, groupby=leiden_key)
+        
+        # Create an improved heatmap with better formatting
+        plt.figure(figsize=(14, 10))
+        sc.pl.heatmap(adata, var_names=adata.uns[f'rank_genes_{optimal_resolution}']['names'][:n_top_genes], 
+                      groupby=leiden_key, 
+                      swap_axes=True,              # Put genes on y-axis for better labels
+                      show_gene_labels=True,       # Show gene names
+                      dendrogram=True,             # Show the dendrogram
+                      cmap='viridis',              # Use a perceptually uniform colormap
+                      vmin=0, vmax=None,           # Set minimum value to 0
+                      standard_scale='var',        # Scale expression by gene
+                      use_raw=True,                # Use raw counts for better contrast
+                      show=False)
+        
+        plt.title(f"Top Markers for Optimal Clustering (Resolution={optimal_resolution})", fontsize=16)
+        plt.tight_layout()
+        
+        # Save the improved heatmap
+        improved_heatmap_path = os.path.join(OUTPUT_DIR, 'my_cluster_analysis', 'evaluation', 'improved_clustering_heatmap.png')
+        plt.savefig(improved_heatmap_path, dpi=150, bbox_inches='tight')
+        plt.show()
+        
+        print(f"Improved marker gene heatmap saved to: {improved_heatmap_path}")
+    else:
+        # If we don't have marker genes, display the original heatmap
+        optimal_heatmap_img = Image(optimal_heatmap_path)
+        print(f"Marker gene heatmap for optimal clustering (resolution={optimal_resolution}):")
+        display(optimal_heatmap_img)
 
 # %%
 # Load and display top markers for each cluster in the optimal clustering

@@ -224,9 +224,10 @@ if 'majority_voting' in adata_norm.obs.columns:
                 title=f"Cell Type Annotation ({sel_model}, {sel_sample})")
     plt.tight_layout()
     output_file = os.path.join(results_dir, f"{sel_sample}_celltypes.png")
-    plt.savefig(output_file, dpi=150)
+    fig.savefig(output_file, dpi=150)
     print(f"Saved cell type plot to {output_file}")
     plt.show()
+    plt.close(fig)
 
 # %%
 # Confidence score plot
@@ -236,9 +237,10 @@ if 'conf_score' in adata_norm.obs.columns:
                 title=f"Annotation Confidence Score ({sel_model}, {sel_sample})", cmap='viridis')
     plt.tight_layout()
     output_file = os.path.join(results_dir, f"{sel_sample}_confidence.png")
-    plt.savefig(output_file, dpi=150)
+    fig.savefig(output_file, dpi=150)
     print(f"Saved confidence score plot to {output_file}")
     plt.show()
+    plt.close(fig)
 
 # %%
 # Get probability columns
@@ -258,38 +260,6 @@ other_cols = [col for col in prob_columns if col not in hippo_cols and col not i
 print(hippo_cols)
 print(cortex_cols)
 print(other_cols)
-
-
-# %%
-# Plot top probabilities for hippocampus and cortex
-for region, cols, title in [
-    ('hippocampus', hippo_cols, 'Hippocampal Cell Types'), 
-    ('cortex', cortex_cols, 'Cortical Cell Types')
-]:
-    if cols:
-        # Create a combined plot for top cell types
-        top_cols = cols[:min(6, len(cols))]
-        if len(top_cols) > 0:
-            try:
-                # Plot in a grid with 4 elements per row
-                n_cols = 3
-                n_rows = (len(top_cols) + n_cols - 1) // n_cols  # Ceiling division
-                fig, axs = plt.subplots(n_rows, n_cols, figsize=(20, 5 * n_rows))
-                axs = axs.flatten() if n_rows > 1 or n_cols > 1 else [axs]
-                
-                for i, col in enumerate(top_cols):
-                    cell_type = col.replace('prob_', '')
-                    sc.pl.umap(adata_norm, color=col, ax=axs[i], title=f"{cell_type} Probability", 
-                              cmap='viridis', vmin=0, vmax=1, show=False)
-                
-                # Hide unused axes
-                for i in range(len(top_cols), len(axs)):
-                    axs[i].set_visible(False)
-                    
-                plt.tight_layout()
-                plt.show()
-            except Exception as e:
-                print(f"Error plotting probabilities for {region}: {e}")
 
 # %% [markdown]
 # # Save data

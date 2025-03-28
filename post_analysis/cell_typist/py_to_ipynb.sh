@@ -1,0 +1,4 @@
+#!/bin/bash
+
+ipynb-py-convert template_annotation_Mouse_Dentate_Gyrus.py template_annotation_Mouse_Dentate_Gyrus.ipynb
+ipynb-py-convert template_annotation_Mouse_Isocortex_Hippocampus.py template_annotation_Mouse_Isocortex_Hippocampus.ipynb
