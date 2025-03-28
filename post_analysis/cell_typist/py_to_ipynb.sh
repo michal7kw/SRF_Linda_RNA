@@ -2,3 +2,6 @@
 
 ipynb-py-convert template_annotation_Mouse_Dentate_Gyrus.py template_annotation_Mouse_Dentate_Gyrus.ipynb
 ipynb-py-convert template_annotation_Mouse_Isocortex_Hippocampus.py template_annotation_Mouse_Isocortex_Hippocampus.ipynb
+
+cd check_unannotated
+ipynb-py-convert template_analyze_unassigned_cells_Isocortex_Hippocampus.py template_analyze_unassigned_cells_Isocortex_Hippocampus.ipynb

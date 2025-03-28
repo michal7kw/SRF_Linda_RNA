@@ -1,0 +1,14 @@
+Analysis summary for Nestin_Ctrl with model Mouse_Dentate_Gyrus
+Total cells: 9512
+Total genes: 27564
+
+Cell type distribution:
+Unassigned: 6079 cells (63.91%)
+CA3-Pyr: 1189 cells (12.50%)
+MOL: 863 cells (9.07%)
+GABA: 500 cells (5.26%)
+MiCajal-Retziusoglia: 467 cells (4.91%)
+OPC: 286 cells (3.01%)
+NFOL: 54 cells (0.57%)
+Endothelial: 49 cells (0.52%)
+MOL|OPC: 25 cells (0.26%)

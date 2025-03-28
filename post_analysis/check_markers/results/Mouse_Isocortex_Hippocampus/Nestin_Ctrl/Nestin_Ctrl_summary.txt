@@ -1,0 +1,31 @@
+Analysis summary for Nestin_Ctrl with model Mouse_Isocortex_Hippocampus
+Total cells: 9512
+Total genes: 27564
+
+Cell type distribution:
+Unassigned: 4209 cells (44.25%)
+DG: 1388 cells (14.59%)
+Oligo: 1380 cells (14.51%)
+Micro-PVM: 445 cells (4.68%)
+Astro: 382 cells (4.02%)
+CA1-ProS: 344 cells (3.62%)
+DG|Oligo: 208 cells (2.19%)
+L6b/CT ENT: 180 cells (1.89%)
+CA3: 175 cells (1.84%)
+CA1-ProS|Oligo: 88 cells (0.93%)
+Sst: 73 cells (0.77%)
+SUB-ProS: 70 cells (0.74%)
+L2/3 IT PPP: 66 cells (0.69%)
+Sncg: 64 cells (0.67%)
+Pvalb: 62 cells (0.65%)
+Endo: 49 cells (0.52%)
+VLMC: 46 cells (0.48%)
+Lamp5: 46 cells (0.48%)
+L4/5 IT CTX: 44 cells (0.46%)
+NP SUB: 41 cells (0.43%)
+L3 IT ENT: 39 cells (0.41%)
+Lamp5|Oligo: 31 cells (0.33%)
+CA3|Oligo: 29 cells (0.30%)
+DG|VLMC: 22 cells (0.23%)
+Astro|Oligo: 21 cells (0.22%)
+Astro|Micro-PVM: 10 cells (0.11%)

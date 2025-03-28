@@ -1,0 +1,18 @@
+Analysis summary for Emx1_Ctrl with model Mouse_Isocortex_Hippocampus
+Total cells: 4707
+Total genes: 26071
+
+Cell type distribution:
+Unassigned: 2436 cells (51.75%)
+DG: 868 cells (18.44%)
+CA1-ProS: 375 cells (7.97%)
+Oligo: 232 cells (4.93%)
+CA3: 167 cells (3.55%)
+Astro: 149 cells (3.17%)
+SUB-ProS: 105 cells (2.23%)
+Sst: 90 cells (1.91%)
+Pvalb: 87 cells (1.85%)
+Sncg: 76 cells (1.61%)
+Micro-PVM: 51 cells (1.08%)
+DG|Oligo: 43 cells (0.91%)
+L4/5 IT CTX: 28 cells (0.59%)

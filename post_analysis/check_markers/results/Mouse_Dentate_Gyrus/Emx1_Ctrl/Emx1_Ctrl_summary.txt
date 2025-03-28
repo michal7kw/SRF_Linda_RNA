@@ -1,0 +1,14 @@
+Analysis summary for Emx1_Ctrl with model Mouse_Dentate_Gyrus
+Total cells: 4707
+Total genes: 26071
+
+Cell type distribution:
+Unassigned: 2852 cells (60.59%)
+CA3-Pyr: 1050 cells (22.31%)
+GABA: 322 cells (6.84%)
+GC-juv: 228 cells (4.84%)
+MOL: 96 cells (2.04%)
+Endothelial: 59 cells (1.25%)
+MiCajal-Retziusoglia: 51 cells (1.08%)
+OPC: 34 cells (0.72%)
+Ependymal: 15 cells (0.32%)

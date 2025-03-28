@@ -31,6 +31,11 @@ def create_parameterized_notebook(template_path, output_path, sample_name, model
     with open(template_path, 'r') as f:
         notebook = json.load(f)
     
+    # Create the output directory for results
+    output_dir = os.path.join(os.path.dirname(template_path), "results", model_type, sample_name)
+    os.makedirs(output_dir, exist_ok=True)
+    print(f"Created output directory: {output_dir}")
+    
     # Find the cells with placeholders and replace them
     for cell in notebook['cells']:
         if 'source' in cell:
@@ -41,7 +46,14 @@ def create_parameterized_notebook(template_path, output_path, sample_name, model
                 line = line.replace('SAMPLE_PLACEHOLDER', sample_name)
                 # Replace MODEL_TYPE with the model type
                 line = line.replace('MODEL_TYPE', model_type)
-                new_source.append(line)
+                # Add output directory setup
+                if 'WORKING_DIR = ' in line:
+                    new_source.append(line)
+                    new_source.append(f'OUTPUT_DIR = os.path.join(WORKING_DIR, "results", "{model_type}", "{sample_name}")\n')
+                    new_source.append('os.makedirs(OUTPUT_DIR, exist_ok=True)\n')
+                    new_source.append('print(f"Output directory: {OUTPUT_DIR}")\n')
+                else:
+                    new_source.append(line)
             cell['source'] = new_source
     
     # Save the parameterized notebook
@@ -103,8 +115,8 @@ def main():
         print(f"Error: Template notebook not found at {template_path}")
         sys.exit(1)
     
-    # Create the notebooks directory if it doesn't exist
-    notebooks_dir = os.path.join(os.path.dirname(template_path), "notebooks")
+    # Create the notebooks directory structure
+    notebooks_dir = os.path.join(os.path.dirname(template_path), "notebooks", args.model)
     os.makedirs(notebooks_dir, exist_ok=True)
     
     # Process each sample

@@ -1,0 +1,30 @@
+Analysis summary for Emx1_Mut with model Mouse_Isocortex_Hippocampus
+Total cells: 6242
+Total genes: 26302
+
+Cell type distribution:
+Unassigned: 2705 cells (43.34%)
+Oligo: 591 cells (9.47%)
+CA1-ProS: 423 cells (6.78%)
+DG: 382 cells (6.12%)
+CA3: 346 cells (5.54%)
+Astro: 213 cells (3.41%)
+L2/3 IT PPP: 206 cells (3.30%)
+Pvalb: 158 cells (2.53%)
+L6b/CT ENT: 140 cells (2.24%)
+Sncg: 130 cells (2.08%)
+SUB-ProS: 128 cells (2.05%)
+Sst: 128 cells (2.05%)
+L3 IT ENT: 124 cells (1.99%)
+L2 IT ENTm: 74 cells (1.19%)
+L4/5 IT CTX: 71 cells (1.14%)
+Lamp5: 68 cells (1.09%)
+CT SUB: 65 cells (1.04%)
+L2 IT ENTl: 56 cells (0.90%)
+NP SUB: 55 cells (0.88%)
+VLMC: 54 cells (0.87%)
+Vip: 48 cells (0.77%)
+L2/3 IT CTX: 31 cells (0.50%)
+Micro-PVM: 25 cells (0.40%)
+SMC-Peri: 12 cells (0.19%)
+Astro|Oligo: 9 cells (0.14%)

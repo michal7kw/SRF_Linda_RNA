@@ -1,0 +1,13 @@
+Analysis summary for Emx1_Mut with model Mouse_Dentate_Gyrus
+Total cells: 6242
+Total genes: 26302
+
+Cell type distribution:
+Unassigned: 3209 cells (51.41%)
+CA3-Pyr: 2007 cells (32.15%)
+GABA: 760 cells (12.18%)
+MOL: 96 cells (1.54%)
+OPC: 74 cells (1.19%)
+Endothelial: 53 cells (0.85%)
+MiCajal-Retziusoglia: 25 cells (0.40%)
+NFOL: 18 cells (0.29%)

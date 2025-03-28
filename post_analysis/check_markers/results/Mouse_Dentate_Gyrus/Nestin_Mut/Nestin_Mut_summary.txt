@@ -1,0 +1,14 @@
+Analysis summary for Nestin_Mut with model Mouse_Dentate_Gyrus
+Total cells: 9237
+Total genes: 26095
+
+Cell type distribution:
+Unassigned: 4211 cells (45.59%)
+CA3-Pyr: 2389 cells (25.86%)
+GABA: 1222 cells (13.23%)
+MOL: 647 cells (7.00%)
+OPC: 323 cells (3.50%)
+MiCajal-Retziusoglia: 320 cells (3.46%)
+NFOL: 78 cells (0.84%)
+Cajal-Retzius: 37 cells (0.40%)
+Ependymal: 10 cells (0.11%)

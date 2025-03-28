@@ -20,6 +20,9 @@ cd /beegfs/scratch/ric.broccoli/kubacki.michal/SRF_Linda_RNA/post_analysis/check
 
 # Make sure logs directory exists
 mkdir -p logs
+# Create results directory structure
+mkdir -p results
+mkdir -p notebooks
 
 # Define the arrays of samples and models
 SAMPLES=(Emx1_Ctrl Emx1_Mut Nestin_Ctrl Nestin_Mut)
@@ -37,6 +40,13 @@ echo "Processing array task ID: $SLURM_ARRAY_TASK_ID"
 echo "Sample index: $SAMPLE_INDEX, Model index: $MODEL_INDEX"
 echo "Processing sample: $CURRENT_SAMPLE"
 echo "Processing model: $CURRENT_MODEL"
+
+# Create directory structure for notebooks and results
+mkdir -p notebooks/${CURRENT_MODEL}
+mkdir -p results/${CURRENT_MODEL}/${CURRENT_SAMPLE}
+
+# Ensure proper permissions for output directory
+chmod -R 775 results
 
 # Run the parameterized notebooks script for the current sample-model combination
 python run_parameterized_notebooks.py --template manual_annotation.ipynb --samples $CURRENT_SAMPLE --model $CURRENT_MODEL --timeout -1 --force
