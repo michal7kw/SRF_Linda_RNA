@@ -41,7 +41,7 @@ MODEL_TYPE = "MODEL_TYPE"  # This will be replaced with the actual model type
 print(f"Processing model: {MODEL_TYPE}")
 
 # %%
-data_path = f"/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_Linda_RNA/post_analysis/cell_typist/results_Mouse_{MODEL_TYPE}"
+data_path = f"/beegfs/scratch/ric.broccoli/kubacki.michal/SRF_Linda_RNA/post_analysis/cell_typist/results_{MODEL_TYPE}"
 
 adata_paths = {
     "Emx1_Ctrl": f"{data_path}/Emx1_Ctrl_annotated.h5ad",

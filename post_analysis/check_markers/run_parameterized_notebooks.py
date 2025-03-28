@@ -103,10 +103,14 @@ def main():
         print(f"Error: Template notebook not found at {template_path}")
         sys.exit(1)
     
+    # Create the notebooks directory if it doesn't exist
+    notebooks_dir = os.path.join(os.path.dirname(template_path), "notebooks")
+    os.makedirs(notebooks_dir, exist_ok=True)
+    
     # Process each sample
     for sample_name in args.samples:
         # Define the output notebook path
-        output_path = os.path.join(os.path.dirname(template_path), f"{sample_name}.ipynb")
+        output_path = os.path.join(notebooks_dir, f"{sample_name}.ipynb")
         
         # Check if output notebook already exists
         if os.path.exists(output_path) and not args.force:
