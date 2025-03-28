@@ -20,9 +20,8 @@ def identify_and_visualize_markers(adata, resolutions, output_dir=None,
     Identifies and visualizes marker genes for different clustering resolutions.
     
     This function performs differential expression analysis to find marker genes for each cluster
-    at various resolutions, generates ranking plots, saves marker genes to CSV files,
-    and creates heatmaps to visualize the expression of top markers. It also generates a summary
-    comparison of the number of DEGs across resolutions.
+    at various resolutions, generates ranking plots, and saves marker genes to CSV files.
+    The heatmap generation has been removed from this function.
     
     Parameters:
     -----------
@@ -126,74 +125,8 @@ def identify_and_visualize_markers(adata, resolutions, output_dir=None,
         except Exception as e:
             print(f"  ✗ Error extracting marker genes: {e}")
             continue
-        
-        # Generate heatmap of top markers per cluster
-        try:
-            # Extract top markers per cluster
-            top_markers_per_cluster = {}
-            for cluster in np.unique(adata.obs[leiden_resolution]):
-                cluster_markers = marker_genes[marker_genes['cluster'] == int(cluster)]
-                top_markers_per_cluster[cluster] = cluster_markers['names'].tolist()[:n_heatmap_genes]
             
-            # Flatten and deduplicate
-            markers_flat = [gene for cluster_markers in top_markers_per_cluster.values() 
-                           for gene in cluster_markers]
-            markers_unique = list(dict.fromkeys(markers_flat))
-            
-            # Ensure all genes exist in the dataset
-            available_markers = [gene for gene in markers_unique if gene in adata.var_names]
-            
-            if not available_markers:
-                print("  ✗ No valid marker genes found in adata.var_names. Heatmap cannot be plotted.")
-                continue
-                
-            if len(available_markers) < len(markers_unique):
-                missing = len(markers_unique) - len(available_markers)
-                print(f"  ⚠ {missing} marker genes not found in dataset and excluded from heatmap")
-            
-            # Calculate dendrogram once per resolution
-            if f"dendrogram_{leiden_resolution}" not in adata.uns:
-                sc.tl.dendrogram(adata, groupby=leiden_resolution)
-            
-            # Generate improved heatmap
-            plt.figure(figsize=(16, 12))  # Larger figure size for better readability
-            
-            # Create an enhanced heatmap with better formatting
-            sc.pl.heatmap(adata, available_markers, groupby=leiden_resolution, 
-                         dendrogram=True, 
-                         swap_axes=True,               # Put genes on y-axis for better labels
-                         show_gene_labels=True,        # Show gene names
-                         use_raw=False,                # Use normalized data
-                         standard_scale='var',         # Scale expression by gene
-                         cmap='viridis',               # Use a perceptually uniform colormap
-                         vmin=0,                       # Set minimum value to 0
-                         vmax=None,                    # Let max value scale automatically
-                         show=False,
-                         colorbar_title='Scaled expression')
-            
-            plt.title(f"Marker gene expression heatmap (resolution = {resolution})", fontsize=16, pad=20)
-            
-            # Improve tick labels
-            ax = plt.gca()
-            for label in ax.get_yticklabels():
-                label.set_fontsize(10)
-                label.set_fontweight('bold')
-            
-            plt.tight_layout()
-            
-            if save_figures:
-                plt.savefig(os.path.join(output_dir, f"markers_heatmap_res{resolution}.png"), 
-                           dpi=150, bbox_inches='tight')
-            
-            if show_figures:
-                plt.show()
-            else:
-                plt.close()
-                
-            print(f"  ✓ Generated enhanced heatmap with {len(available_markers)} genes")
-            
-        except Exception as e:
-            print(f"  ✗ Error generating heatmap: {e}")
+        # Note: Heatmap generation has been removed from this function
     
     # Generate summary comparison
     if all_markers:
@@ -606,9 +539,9 @@ def evaluate_clustering_quality(adata, resolutions, marker_results=None, leiden_
         # Create a detailed report on the optimal clustering
         optimal_leiden = f"{leiden_key}_{optimal_resolution}"
         
-        # Visualize optimal clustering
+        # Display optimal clustering on UMAP
         try:
-            # UMAP or tSNE visualization if available
+            # Display optimal clustering on UMAP
             if 'X_umap' in adata.obsm:
                 plt.figure(figsize=(10, 8))
                 sc.pl.umap(adata, color=optimal_leiden, legend_loc='on data', 
@@ -630,7 +563,8 @@ def evaluate_clustering_quality(adata, resolutions, marker_results=None, leiden_
         except Exception as e:
             print(f"Error plotting optimal clustering: {e}")
         
-        # Generate cluster distinctiveness heatmap
+        # Remove cluster distinctiveness heatmap generation
+        # Instead, save top markers to CSV to be used by separate heatmap generation script
         try:
             if f"rank_genes_{optimal_resolution}" in adata.uns:
                 # Get top markers for each cluster
@@ -653,56 +587,8 @@ def evaluate_clustering_quality(adata, resolutions, marker_results=None, leiden_
                 
                 # Save top markers to CSV
                 top_marker_matrix.to_csv(os.path.join(output_dir, "optimal_cluster_top_markers.csv"))
-                
-                # Plot top markers heatmap
-                if 'dendrogram' not in adata.uns or f"{optimal_leiden}" not in adata.uns['dendrogram']:
-                    sc.tl.dendrogram(adata, groupby=optimal_leiden)
-                
-                # Get all unique markers
-                all_markers = [gene for markers in top_markers.values() for gene in markers]
-                unique_markers = list(dict.fromkeys(all_markers))
-                
-                # Ensure markers are in the dataset
-                available_markers = [gene for gene in unique_markers if gene in adata.var_names]
-                
-                if available_markers:
-                    plt.figure(figsize=(16, 12))  # Larger figure for readability
-                    
-                    # Create an enhanced heatmap with better formatting
-                    sc.pl.heatmap(adata, available_markers, groupby=optimal_leiden, 
-                                 dendrogram=True,
-                                 swap_axes=True,              # Put genes on y-axis for better labels  
-                                 show_gene_labels=True,       # Show gene names
-                                 use_raw=False,               # Use processed data
-                                 standard_scale='var',        # Scale expression by gene
-                                 cmap='viridis',              # Better colormap
-                                 vmin=0,                      # Set minimum value to 0
-                                 vmax=None,                   # Let max scale automatically
-                                 show=False,
-                                 colorbar_title='Scaled expression')
-                    
-                    # Improve the title
-                    plt.suptitle(f'Top Markers for Optimal Clustering (Resolution={optimal_resolution})', 
-                                fontsize=18, y=0.98)
-                    plt.title('Hierarchical Clustering of Cell Groups', fontsize=14, pad=10)
-                    
-                    # Improve tick labels
-                    ax = plt.gca()
-                    for label in ax.get_yticklabels():
-                        label.set_fontsize(10)
-                        label.set_fontweight('bold')
-                    
-                    plt.tight_layout(rect=[0, 0, 1, 0.96])  # Make room for suptitle
-                    plt.savefig(os.path.join(output_dir, "optimal_clustering_heatmap.png"), 
-                               dpi=150, bbox_inches='tight')
-                    if show_figures:
-                        plt.show()
-                    else:
-                        plt.close()
-                    
-                    print(f"Enhanced heatmap of {len(available_markers)} top marker genes saved.")
         except Exception as e:
-            print(f"Error generating optimal clustering heatmap: {e}")
+            print(f"Error saving top markers: {e}")
         
         plot_metric_contributions(metrics_df, output_dir)
         

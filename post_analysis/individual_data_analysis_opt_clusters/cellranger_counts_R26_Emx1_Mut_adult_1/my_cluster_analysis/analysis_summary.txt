@@ -2,8 +2,8 @@
 CLUSTERING ANALYSIS SUMMARY
 ==================================================
 
-Date: 2025-03-28 08:25:08
-Analysis duration: 599.5 seconds
+Date: 2025-03-28 10:02:26
+Analysis duration: 478.4 seconds
 
 Resolutions tested: 10
 Resolution range: 0.05 to 0.8

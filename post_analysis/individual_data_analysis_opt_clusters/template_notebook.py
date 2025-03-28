@@ -345,149 +345,41 @@ if os.path.exists(contribution_summary_path):
 # ## 8.2 Marker Genes for Optimal Clustering
 
 # %%
-# Display marker heatmap for optimal clustering
-optimal_heatmap_path = os.path.join(OUTPUT_DIR, 'my_cluster_analysis', 'evaluation', 'optimal_clustering_heatmap.png')
-if os.path.exists(optimal_heatmap_path):
-    # Instead of just displaying the image, let's create an improved version
-    # First, get the marker genes and expression data
-    leiden_key = f'leiden_{optimal_resolution}'
-    
-    # Check if we have marker genes information
-    if f"rank_genes_{optimal_resolution}" in adata.uns:
-        # Get top markers for each cluster (adjust n_genes as needed)
-        n_top_genes = 20
-        sc.tl.dendrogram(adata, groupby=leiden_key)
-        
-        # Create an improved heatmap with better formatting
-        plt.figure(figsize=(14, 10))
-        sc.pl.heatmap(adata, var_names=adata.uns[f'rank_genes_{optimal_resolution}']['names'][:n_top_genes], 
-                      groupby=leiden_key, 
-                      swap_axes=True,              # Put genes on y-axis for better labels
-                      show_gene_labels=True,       # Show gene names
-                      dendrogram=True,             # Show the dendrogram
-                      cmap='viridis',              # Use a perceptually uniform colormap
-                      vmin=0, vmax=None,           # Set minimum value to 0
-                      standard_scale='var',        # Scale expression by gene
-                      use_raw=True,                # Use raw counts for better contrast
-                      show=False)
-        
-        plt.title(f"Top Markers for Optimal Clustering (Resolution={optimal_resolution})", fontsize=16)
-        plt.tight_layout()
-        
-        # Save the improved heatmap
-        improved_heatmap_path = os.path.join(OUTPUT_DIR, 'my_cluster_analysis', 'evaluation', 'improved_clustering_heatmap.png')
-        plt.savefig(improved_heatmap_path, dpi=150, bbox_inches='tight')
-        plt.show()
-        
-        print(f"Improved marker gene heatmap saved to: {improved_heatmap_path}")
-    else:
-        # If we don't have marker genes, display the original heatmap
-        optimal_heatmap_img = Image(optimal_heatmap_path)
-        print(f"Marker gene heatmap for optimal clustering (resolution={optimal_resolution}):")
-        display(optimal_heatmap_img)
-
-# %%
-# Load and display top markers for each cluster in the optimal clustering
-markers_file = os.path.join(OUTPUT_DIR, 'my_cluster_analysis', 'marker_analysis', f'cluster_markers_res{optimal_resolution}.csv')
-if os.path.exists(markers_file):
-    markers_df = pd.read_csv(markers_file)
-    
-    # Create a more readable format for marker genes by cluster
-    top_markers_by_cluster = {}
-    for cluster in sorted(markers_df['cluster'].unique()):
-        cluster_markers = markers_df[markers_df['cluster'] == cluster].sort_values('pvals_adj').head(10)
-        top_markers_by_cluster[cluster] = list(zip(
-            cluster_markers['names'], 
-            cluster_markers['logfoldchanges'].round(2),
-            cluster_markers['pvals_adj'].apply(lambda x: f"{x:.2e}")
-        ))
-    
-    # Display top markers for each cluster
-    print(f"Top marker genes for each cluster at resolution {optimal_resolution}:")
-    for cluster, markers in top_markers_by_cluster.items():
-        print(f"\nCluster {cluster}:")
-        for i, (gene, lfc, pval) in enumerate(markers, 1):
-            print(f"  {i}. {gene} (log2FC: {lfc}, adj.p-val: {pval})")
-
-# %% [markdown]
-# ## 8.3 Resolution Comparison Summary
-
-# %%
-# Load the resolution comparison summary
-summary_file = os.path.join(OUTPUT_DIR, 'my_cluster_analysis', 'marker_analysis', 'resolution_comparison_summary.csv')
-if os.path.exists(summary_file):
-    summary_df = pd.read_csv(summary_file)
-    print("Resolution comparison summary:")
-    display(summary_df)
-    
-    # Plot resolution comparison metrics
-    plt.figure(figsize=(12, 6))
-    
-    plt.subplot(1, 2, 1)
-    plt.bar(summary_df['Resolution'].astype(str), summary_df['Clusters'])
-    plt.xlabel('Resolution')
-    plt.ylabel('Number of clusters')
-    plt.title('Clusters by resolution')
-    
-    plt.subplot(1, 2, 2)
-    plt.bar(summary_df['Resolution'].astype(str), summary_df['Avg_markers_per_cluster'])
-    plt.xlabel('Resolution')
-    plt.ylabel('Avg. significant markers per cluster')
-    plt.title('Marker genes by resolution')
-    
-    plt.tight_layout()
-    plt.show()
-
-# %% [markdown]
-# ## 8.4 Interactive Visualization of Optimal Clustering
-
-# %%
-# Create an interactive visualization of the optimal clustering with marker genes
+# Only show the marker genes information, without the heatmap
 leiden_key = f'leiden_{optimal_resolution}'
 
-# Plot UMAP with interactive cluster selection
-sc.pl.umap(adata, color=leiden_key, legend_loc='on data', 
-           title=f'Interactive UMAP (resolution={optimal_resolution})', 
-           frameon=True, return_fig=True)
+# Check if we have marker genes information and display them
+if f"rank_genes_{optimal_resolution}" in adata.uns:
+    # Get top markers for each cluster (adjust n_genes as needed)
+    n_top_genes = 20
+    
+    # Load and display top markers for each cluster in the optimal clustering
+    markers_file = os.path.join(OUTPUT_DIR, 'my_cluster_analysis', 'marker_analysis', f'cluster_markers_res{optimal_resolution}.csv')
+    if os.path.exists(markers_file):
+        markers_df = pd.read_csv(markers_file)
+        
+        # Create a more readable format for marker genes by cluster
+        top_markers_by_cluster = {}
+        for cluster in sorted(markers_df['cluster'].unique()):
+            cluster_markers = markers_df[markers_df['cluster'] == cluster].sort_values('pvals_adj').head(10)
+            top_markers_by_cluster[cluster] = list(zip(
+                cluster_markers['names'], 
+                cluster_markers['logfoldchanges'].round(2),
+                cluster_markers['pvals_adj'].apply(lambda x: f"{x:.2e}")
+            ))
+        
+        # Display top markers for each cluster
+        print(f"Top marker genes for each cluster at resolution {optimal_resolution}:")
+        for cluster, markers in top_markers_by_cluster.items():
+            print(f"\nCluster {cluster}:")
+            for i, (gene, lfc, pval) in enumerate(markers, 1):
+                print(f"  {i}. {gene} (log2FC: {lfc}, adj.p-val: {pval})")
+else:
+    print("No marker gene information available for the optimal clustering.")
 
-# Create an interactive panel to explore top markers for each cluster
-try:
-    # Only import panel libraries if needed to avoid dependencies
-    import panel as pn
-    pn.extension()
-    
-    # Get unique clusters
-    clusters = sorted(adata.obs[leiden_key].unique().astype(str).tolist())
-    
-    # Create widgets
-    cluster_selector = pn.widgets.Select(name='Select Cluster', options=clusters)
-    n_genes_slider = pn.widgets.IntSlider(name='Number of Genes', start=5, end=20, value=10)
-    
-    @pn.depends(cluster_selector.param.value, n_genes_slider.param.value)
-    def get_marker_table(cluster, n_genes):
-        # Get markers for selected cluster
-        if f"rank_genes_{optimal_resolution}" in adata.uns:
-            markers_df = sc.get.rank_genes_groups_df(adata, group=cluster, 
-                                                    key=f"rank_genes_{optimal_resolution}")
-            markers_df = markers_df.head(n_genes)
-            return pn.pane.DataFrame(markers_df[['names', 'logfoldchanges', 'pvals_adj']], 
-                                     width=600, height=400)
-        else:
-            return pn.pane.Markdown("Marker gene information not available")
-    
-    # Create layout
-    marker_panel = pn.Column(
-        pn.pane.Markdown(f"# Marker Genes Explorer for Resolution {optimal_resolution}"),
-        pn.Row(cluster_selector, n_genes_slider),
-        get_marker_table
-    )
-    
-    # Display panel
-    display(marker_panel)
-except ImportError:
-    print("Panel library not available. Install with 'pip install panel' for interactive visualizations.")
-except Exception as e:
-    print(f"Error creating interactive visualization: {e}")
+# %%
+print("NOTE: Heatmap generation has been moved to a separate script.")
+print("Please use the generate_marker_heatmaps.py script to create heatmaps from the saved .h5ad files.")
 
 # %% [markdown]
 # # 9. Summary and Conclusion
