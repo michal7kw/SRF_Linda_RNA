@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ipynb-py-convert template_analyze_unassigned_cells_Isocortex_Hippocampus.py template_analyze_unassigned_cells_Isocortex_Hippocampus.ipynb

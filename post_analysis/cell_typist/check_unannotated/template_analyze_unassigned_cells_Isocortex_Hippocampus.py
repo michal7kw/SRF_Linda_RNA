@@ -271,7 +271,7 @@ def explore_original_cell_types(adata, output_dir, sample_name):
 
 # %%
 # Path to the annotated h5ad file
-annotated_file = os.path.join(results_dir, f"{sel_sample}_annotated.h5ad")
+annotated_file = os.path.join(output_dir, f"{sel_sample}_annotated.h5ad")
 
 # Check if file exists
 if not os.path.exists(annotated_file):
